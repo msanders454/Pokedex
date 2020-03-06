@@ -1,14 +1,16 @@
 require('dotenv').config()
 const express = require('express')
-const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
-app.use(morgan(morganSetting))
+const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const POKEDEX = require('./pokedex.json')
 
+console.log(process.env.API_TOKEN)
+
 const app = express()
 
-app.use(morgan('dev'))
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
+app.use(morgan(morganSetting))
 app.use(helmet())
 app.use(cors())
 
@@ -48,16 +50,6 @@ app.get('/pokemon', function handleGetPokemon(req, res) {
   }
 
   res.json(response)
-})
-
-app.use((error, req, res, next) => {
-  let response
-  if (process.env.NODE_ENV === 'production') {
-    response = { error: { message: 'server error' }}
-  } else {
-    response = { error }
-  }
-  res.status(500).json(response)
 })
 
 const PORT = process.env.PORT || 8000
